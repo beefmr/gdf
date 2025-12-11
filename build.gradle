@@ -1,0 +1,87 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'jacoco'
+}
+
+group = 'com.mockgen'
+version = '1.0.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    // CSV parsing
+    implementation 'org.apache.commons:commons-csv:1.10.0'
+
+    // Testing
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
+    testImplementation 'org.mockito:mockito-core:5.5.0'
+    testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
+}
+
+application {
+    mainClass = 'com.mockgen.Main'
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+        showExceptions = true
+        exceptionFormat = 'full'
+        showCauses = true
+        showStackTraces = true
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, include: [
+                    'com/mockgen/service/**',
+                    'com/mockgen/dao/**'
+            ], exclude: [
+                    'com/mockgen/**/model/**',
+                    'com/mockgen/**/config/**',
+                    'com/mockgen/Main.class'
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        rule {
+            element = 'PACKAGE'
+            includes = ['com.mockgen.service', 'com.mockgen.dao']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80 // 80% coverage required
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
