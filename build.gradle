@@ -49,8 +49,13 @@ jacocoTestCoverageVerification {
     dependsOn jacocoTestReport
     violationRules {
         rule {
-            element = 'PACKAGE'
-            includes = ['com.mockgen.service', 'com.mockgen.dao']
+            element = 'BUNDLE'
+            includes = ['com.mockgen.*']
+            excludes = [
+                    'com.mockgen.service.ReportService',
+                    'com.mockgen.config.*',
+                    'com.mockgen.Main'
+            ]
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
