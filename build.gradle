@@ -57,16 +57,6 @@ jacocoTestCoverageVerification {
                 minimum = 0.50
             }
         }
-
-        rule {
-            element = 'PACKAGE'
-            includes = ['com.mockgen.config']
-            limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 0.0  // Нет требований
-            }
-        }
     }
 }
 
