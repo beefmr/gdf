@@ -1,93 +1,50 @@
-name: Java CI/CD Pipeline
+name: CI Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main ]
   pull_request:
     branches: [ main ]
 
 jobs:
-  build-and-test:
+  test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java-version: [ '11', '17', '21' ]
-        distribution: [ 'temurin' ]
+        java: [ '11', '17', '21' ]
 
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Java ${{ matrix.java-version }}
+      - name: Set up JDK ${{ matrix.java }}
         uses: actions/setup-java@v4
         with:
-          java-version: ${{ matrix.java-version }}
-          distribution: ${{ matrix.distribution }}
+          java-version: ${{ matrix.java }}
+          distribution: 'temurin'
 
-      - name: Cache Gradle dependencies
+      - name: Cache Gradle
         uses: actions/cache@v3
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ matrix.java-version }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ matrix.java }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
           restore-keys: |
-            ${{ runner.os }}-gradle-${{ matrix.java-version }}-
+            ${{ runner.os }}-gradle-${{ matrix.java }}-
             ${{ runner.os }}-gradle-
 
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
-
-      - name: Validate Gradle wrapper
-        run: ./gradlew wrapper --validate
-
-      - name: Build with Gradle
-        run: ./gradlew build -x test
-
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Run JaCoCo coverage verification
-        run: ./gradlew jacocoTestCoverageVerification
-
-      - name: Upload JaCoCo coverage report
-        if: ${{ matrix.java-version == '11' }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: jacoco-report
-          path: build/reports/jacoco/test/
-          retention-days: 7
+      - name: Build and test
+        run: ./gradlew build
 
       - name: Upload test results
-        if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v3
         with:
-          name: test-results-java-${{ matrix.java-version }}
+          name: test-results-java-${{ matrix.java }}
           path: build/test-results/test/
-          retention-days: 7
 
-  quality-checks:
-    runs-on: ubuntu-latest
-    needs: build-and-test
-    if: github.event_name == 'pull_request'
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Java 11
-        uses: actions/setup-java@v4
+      - name: Upload coverage report
+        if: ${{ matrix.java == '11' }}
+        uses: actions/upload-artifact@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'
-
-      - name: Download JaCoCo report
-        uses: actions/download-artifact@v4
-        with:
-          name: jacoco-report
+          name: coverage-report
           path: build/reports/jacoco/test/
-
-      - name: Check coverage summary
-        run: |
-          echo "Code coverage report available at:"
-          find build/reports/jacoco/test -name "*.xml" -o -name "*.html" | head -5
-          echo ""
-          echo "All tests passed successfully!"

@@ -8,7 +8,6 @@ group = 'com.mockgen'
 version = '1.0.0'
 
 java {
-    // Используем совместимость с Java 11 (минимальная версия)
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 }
@@ -18,10 +17,7 @@ repositories {
 }
 
 dependencies {
-    // CSV parsing
     implementation 'org.apache.commons:commons-csv:1.10.0'
-
-    // Testing
     testImplementation 'org.junit.jupiter:junit-jupiter:5.10.0'
     testImplementation 'org.mockito:mockito-core:5.5.0'
     testImplementation 'org.mockito:mockito-junit-jupiter:5.5.0'
@@ -34,13 +30,6 @@ application {
 
 test {
     useJUnitPlatform()
-    testLogging {
-        events "passed", "skipped", "failed"
-        showExceptions = true
-        exceptionFormat = 'full'
-        showCauses = true
-        showStackTraces = true
-    }
     finalizedBy jacocoTestReport
 }
 
@@ -53,20 +42,6 @@ jacocoTestReport {
     reports {
         xml.required = true
         html.required = true
-        csv.required = false
-    }
-
-    afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, include: [
-                    'com/mockgen/service/**',
-                    'com/mockgen/dao/**'
-            ], exclude: [
-                    'com/mockgen/**/model/**',
-                    'com/mockgen/**/config/**',
-                    'com/mockgen/Main.class'
-            ])
-        }))
     }
 }
 
@@ -79,7 +54,7 @@ jacocoTestCoverageVerification {
             limit {
                 counter = 'LINE'
                 value = 'COVEREDRATIO'
-                minimum = 0.80 // 80% coverage required
+                minimum = 0.80
             }
         }
     }
