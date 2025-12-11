@@ -9,36 +9,36 @@ import java.io.PrintWriter;
 import java.util.List;
 
 /**
- * Service for generating formatted sales reports.
- * Provides business logic for creating comprehensive sales summaries
- * with multiple sections including regional totals, top sales, and filtered results.
+ * Сервис для генерации форматированных отчетов о продажах.
+ * Содержит бизнес-логику для создания комплексных сводок по продажам
+ * с несколькими разделами: итоги по регионам, топ продажи и отфильтрованные результаты.
  */
 public class ReportService {
     private final AppProperties properties;
 
     /**
-     * Constructs a ReportService with the specified application properties.
+     * Создает экземпляр ReportService с указанными свойствами приложения.
      *
-     * @param properties the application configuration properties
+     * @param properties конфигурационные свойства приложения
      */
     public ReportService(AppProperties properties) {
         this.properties = properties;
     }
 
     /**
-     * Generates a comprehensive sales report containing three main sections:
-     * 1. Sales aggregated by region with total amounts
-     * 2. Top N sales transactions (by ID only)
-     * 3. Sales filtered by configured product ID
+     * Генерирует комплексный отчет о продажах, содержащий три основных раздела:
+     * 1. Продажи, агрегированные по регионам с суммарными суммами
+     * 2. Топ N транзакций продаж (только по ID)
+     * 3. Продажи, отфильтрованные по настроенному идентификатору продукта
      *
-     * The report output destination is determined by the configuration:
-     * - "STDOUT": Outputs to standard output
-     * - Any other value: Writes to "sales-report.txt" file
+     * Направление вывода отчета определяется конфигурацией:
+     * - "STDOUT": вывод в стандартный поток вывода
+     * - Любое другое значение: запись в файл "sales-report.txt"
      *
-     * @param regionSummaries list of regional sales summaries
-     * @param topSales list of top sales transactions
-     * @param filteredSales list of sales filtered by product
-     * @throws IOException if there is an error writing the report to file
+     * @param regionSummaries список сводок по регионам
+     * @param topSales список топовых транзакций продаж
+     * @param filteredSales список продаж, отфильтрованных по продукту
+     * @throws IOException если произошла ошибка при записи отчета в файл
      *
      * @see RegionSummary
      * @see Transaction
@@ -50,14 +50,14 @@ public class ReportService {
 
         StringBuilder report = new StringBuilder();
 
-        // Sales by Region section
+        // Раздел "Продажи по регионам"
         report.append("--- Sales by Region ---\n");
         for (RegionSummary summary : regionSummaries) {
             report.append(summary).append("\n");
         }
         report.append("\n");
 
-        // Top Sales section
+        // Раздел "Топ продажи"
         report.append("--- Top ").append(properties.getTopSalesCount())
                 .append(" Sales (ID) ---\n");
         for (Transaction transaction : topSales) {
@@ -65,14 +65,14 @@ public class ReportService {
         }
         report.append("\n");
 
-        // Filtered Sales section
+        // Раздел "Отфильтрованные продажи"
         report.append("--- Filtered by Product ").append(properties.getFilterProductId())
                 .append(" ---\n");
         for (Transaction transaction : filteredSales) {
             report.append(transaction).append("\n");
         }
 
-        // Determine output destination based on configuration
+        // Определение направления вывода на основе конфигурации
         if ("STDOUT".equalsIgnoreCase(properties.getReportOutput())) {
             System.out.println(report.toString());
         } else {

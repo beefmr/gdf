@@ -6,37 +6,37 @@ import com.mockgen.model.Transaction;
 import java.util.List;
 
 /**
- * Service for sorting and ranking sales transactions.
- * Provides business logic for retrieving top-performing sales transactions.
+ * Сервис для сортировки и ранжирования транзакций продаж.
+ * Содержит бизнес-логику для получения топовых транзакций продаж.
  */
 public class SalesSortingService {
     private final SalesDao salesDao;
 
     /**
-     * Constructs a SalesSortingService with the specified data access object.
+     * Создает экземпляр SalesSortingService с указанным объектом доступа к данным.
      *
-     * @param salesDao the data access object for retrieving sales transactions
+     * @param salesDao объект доступа к данным для получения транзакций продаж
      */
     public SalesSortingService(SalesDao salesDao) {
         this.salesDao = salesDao;
     }
 
     /**
-     * Retrieves the top N sales transactions ordered by amount in descending order.
-     * Transactions with the highest amounts are returned first.
-     * If there are fewer transactions than the requested count, all available
-     * transactions are returned in sorted order.
+     * Получает топ N транзакций продаж, отсортированных по сумме в порядке убывания.
+     * Транзакции с наибольшими суммами возвращаются первыми.
+     * Если доступно меньше транзакций, чем запрошено, возвращаются все доступные
+     * транзакции в отсортированном порядке.
      *
-     * @param count the maximum number of top transactions to return
-     * @return a list of top N transactions sorted by amount (highest first)
-     * @throws DataAccessException if there is an error accessing the sales data
-     * @throws IllegalArgumentException if count is negative
+     * @param count максимальное количество топовых транзакций для возврата
+     * @return список топ N транзакций, отсортированных по сумме (наибольшие сначала)
+     * @throws DataAccessException если произошла ошибка при доступе к данным о продажах
+     * @throws IllegalArgumentException если count отрицательный
      *
      * @see Transaction
      */
     public List<Transaction> getTopSales(int count) throws DataAccessException {
         if (count < 0) {
-            throw new IllegalArgumentException("Count cannot be negative: " + count);
+            throw new IllegalArgumentException("Количество не может быть отрицательным: " + count);
         }
         return salesDao.getTopTransactionsByAmount(count);
     }

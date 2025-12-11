@@ -7,28 +7,28 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service for filtering sales transactions based on various criteria.
- * Provides business logic for querying transactions by product, region, and amount.
+ * Сервис для фильтрации транзакций продаж по различным критериям.
+ * Содержит бизнес-логику для запросов транзакций по продукту, региону и сумме.
  */
 public class SalesFilterService {
     private final SalesDao salesDao;
 
     /**
-     * Constructs a SalesFilterService with the specified data access object.
+     * Создает экземпляр SalesFilterService с указанным объектом доступа к данным.
      *
-     * @param salesDao the data access object for retrieving sales transactions
+     * @param salesDao объект доступа к данным для получения транзакций продаж
      */
     public SalesFilterService(SalesDao salesDao) {
         this.salesDao = salesDao;
     }
 
     /**
-     * Filters transactions by product ID.
-     * Returns all transactions that match the specified product identifier.
+     * Фильтрует транзакции по идентификатору продукта.
+     * Возвращает все транзакции, соответствующие указанному идентификатору продукта.
      *
-     * @param productId the product ID to filter by (case-sensitive)
-     * @return a list of transactions for the specified product
-     * @throws DataAccessException if there is an error accessing the sales data
+     * @param productId идентификатор продукта для фильтрации (с учетом регистра)
+     * @return список транзакций для указанного продукта
+     * @throws DataAccessException если произошла ошибка при доступе к данным о продажах
      *
      * @see Transaction
      */
@@ -39,12 +39,12 @@ public class SalesFilterService {
     }
 
     /**
-     * Filters transactions by region.
-     * Returns all transactions that match the specified region.
+     * Фильтрует транзакции по региону.
+     * Возвращает все транзакции, соответствующие указанному региону.
      *
-     * @param region the region to filter by (case-sensitive)
-     * @return a list of transactions for the specified region
-     * @throws DataAccessException if there is an error accessing the sales data
+     * @param region регион для фильтрации (с учетом регистра)
+     * @return список транзакций для указанного региона
+     * @throws DataAccessException если произошла ошибка при доступе к данным о продажах
      *
      * @see Transaction
      */
@@ -55,12 +55,12 @@ public class SalesFilterService {
     }
 
     /**
-     * Filters transactions by minimum amount.
-     * Returns all transactions with amount greater than the specified minimum.
+     * Фильтрует транзакции по минимальной сумме.
+     * Возвращает все транзакции с суммой больше указанного минимума.
      *
-     * @param minAmount the minimum amount threshold (exclusive)
-     * @return a list of transactions with amount greater than minAmount
-     * @throws DataAccessException if there is an error accessing the sales data
+     * @param minAmount минимальный порог суммы (исключительно)
+     * @return список транзакций с суммой больше minAmount
+     * @throws DataAccessException если произошла ошибка при доступе к данным о продажах
      *
      * @see Transaction
      */
